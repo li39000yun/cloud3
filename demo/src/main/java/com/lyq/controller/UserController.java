@@ -3,6 +3,7 @@ package com.lyq.controller;
 import com.lyq.model.UserEntity;
 import com.lyq.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,6 +21,14 @@ public class UserController {
 
     @Autowired
     UserService userService;
+
+    @Value("${server.port}")
+    String port;
+
+    @RequestMapping("/hello")
+    public String home(@RequestParam String name) {
+        return "hi " + name + ",i am from port:" + port;
+    }
 
     /**
      * 添加用户

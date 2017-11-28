@@ -45,4 +45,9 @@ public class UserServiceImpl implements UserService {
     public void deleteUserById(Long id) {
         userDao.deleteUserById(id);
     }
+
+    @Override
+    public List<UserEntity> findByPage(int skip,int limit) {
+        return userDao.findByPage(skip,limit);
+    }
 }

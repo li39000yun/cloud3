@@ -18,7 +18,7 @@ public class OrderDaoTest {
     @Autowired
     private AccTotalDao accTotalDao;
 
-    @Test
+//    @Test
     public void testUpdateTotal() throws Exception {
         AccTotal accTotal = new AccTotal();
         accTotal.setAccTotal(2000);
@@ -26,10 +26,12 @@ public class OrderDaoTest {
         accTotalDao.updateTotal(accTotal);
     }
 
-    @Test
+//    @Test
     public void find() {
         AccTotal accTotal = accTotalDao.findByUserId(1510418044960L);
-        System.out.println("accTotal is " + accTotal.getAccTotal());
+        if (accTotal != null) {
+            System.out.println("accTotal is " + accTotal.getAccTotal());
+        }
     }
 
 }

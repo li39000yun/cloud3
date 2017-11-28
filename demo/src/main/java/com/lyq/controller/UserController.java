@@ -56,6 +56,11 @@ public class UserController {
         return userService.findAll();
     }
 
+    @RequestMapping("/user/getListByPage")
+    public List<UserEntity> userFindByPage(@PathVariable("skip") int skip,@PathVariable("limit") int limit) {
+        return userService.findByPage(skip,limit);
+    }
+
     @RequestMapping("/user/getByUserName/{userName}")
     public UserEntity userFindOneByUserName(@PathVariable("userName") String userName) {
         return userService.findUserByUserName(userName);

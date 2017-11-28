@@ -21,4 +21,5 @@ public interface UserService {
 
     public void deleteUserById(Long id);
 
+    public List<UserEntity> findByPage(int skip,int limit);
 }

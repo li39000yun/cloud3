@@ -3,11 +3,16 @@ package com.lyq.controller;
 import com.lyq.model.AccTotal;
 import com.lyq.service.AccTotalService;
 import com.lyq.utils.AjaxJson;
+import com.lyq.utils.DistributedLock;
+import com.lyq.utils.MyJedisPool;
 import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * 账户余额对外接口
@@ -18,6 +23,8 @@ public class AccTotalRestController {
 
     @Autowired
     AccTotalService accTotalService;
+
+    DistributedLock lock = new DistributedLock(MyJedisPool.getPool());
 
     /**
      * 查询用户余额
@@ -38,8 +45,11 @@ public class AccTotalRestController {
      */
     @RequestMapping("/accTotal/update/{userId}")
     public AjaxJson updateAccTotal(@PathVariable("userId") Long userId,Double money) {
+//    public synchronized AjaxJson updateAccTotal(@PathVariable("userId") Long userId,Double money) {
         AjaxJson j = new AjaxJson();
         try{
+            // 基于redis的分布式锁，返回锁的value值，供释放锁时候进行判断
+            String indentifier = lock.lockWithTimeout("updateAccTotal", 5000, 1000);
             // 获取余额
             AccTotal accTotal = accTotalService.findByUserId(userId);
             // 修改余额
@@ -47,6 +57,8 @@ public class AccTotalRestController {
             // 更新余额
             accTotalService.updateTotal(accTotal);
             j.setObj(accTotal);
+            // 释放锁
+            lock.releaseLock("updateAccTotal", indentifier);
         } catch (Exception e) {
             j.setSuccess(false);
             j.setMsg(e.getMessage());

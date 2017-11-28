@@ -4,7 +4,9 @@ import com.lyq.model.UserEntity;
 import com.lyq.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -27,7 +29,14 @@ public class IndexController {
 
     @RequestMapping("/list")
     public String list(Model model) {
-        List<UserEntity> users = userService.findAll();
+        List<UserEntity> users = userService.findByPage(0, 100);
+        model.addAttribute("users", users);
+        return "user/list";
+    }
+
+    @RequestMapping("/listByPage")
+    public String userFindByPage(Model model, @RequestParam("skip") int skip, @RequestParam("limit") int limit) {
+        List<UserEntity> users = userService.findByPage(skip, limit);
         model.addAttribute("users", users);
         return "user/list";
     }

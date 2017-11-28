@@ -21,6 +21,11 @@ public class UserDaoImpl implements UserDao {
     private MongoTemplate mongoTemplate;
 
     @Override
+    public void insertAll(List<UserEntity> users) {
+        mongoTemplate.insertAll(users);
+    }
+
+    @Override
     public void saveUser(UserEntity user) {
         mongoTemplate.save(user);
     }
@@ -58,5 +63,13 @@ public class UserDaoImpl implements UserDao {
     @Override
     public List<UserEntity> findAll() {
         return mongoTemplate.findAll(UserEntity.class);
+    }
+
+    @Override
+    public List<UserEntity> findByPage(int skip, int limit) {
+        Query query = new Query();
+        query.skip(skip);
+        query.limit(limit);
+        return mongoTemplate.find(query,UserEntity.class);
     }
 }
